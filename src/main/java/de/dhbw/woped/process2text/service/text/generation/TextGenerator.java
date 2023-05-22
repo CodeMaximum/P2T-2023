@@ -56,6 +56,8 @@ public class TextGenerator {
     ProcessModel model = null;
     HashMap<Integer, String> transformedElemsRev = null;
     NodeList isBPMN = helpdoc.getElementsByTagName("bpmn:process");
+
+    int test = isBPMN.getLength();
     if (isPnml.getLength() > 0) {
       PNMLReader pnmlReader = new PNMLReader();
       PetriNet petriNet = pnmlReader.getPetriNetFromPNMLString(is);

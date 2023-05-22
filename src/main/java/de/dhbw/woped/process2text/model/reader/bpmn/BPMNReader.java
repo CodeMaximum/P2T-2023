@@ -81,7 +81,8 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      logger.info(String.valueOf(flowNodes == null));
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         // erstellen der Activity, hinzufügen in model und transformedElemsRev
         Activity activity =
             new Activity(model.getNewId(), scdNode.getAttribute("name"), lane, pool, type);
@@ -124,7 +125,7 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
 
         newId = model.getNewId();
         Event interelement = new Event(newId, "", lane, pool, EventType.INTM_MSG_THR);
@@ -149,7 +150,7 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         newId = model.getNewId();
         Gateway gateway = new Gateway(newId, "", lane, pool, 0);
         gateway.addBPMNId(event.getAttribute("id"));
@@ -173,7 +174,7 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         newId = model.getNewId();
         Activity activity = new Activity(newId, "complete process", lane, pool, 0);
         activity.addBPMNId(event.getAttribute("id"));
@@ -214,7 +215,7 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         newId = model.getNewId();
         Gateway gateway = new Gateway(newId, "", lane, pool, GatewayType.AND);
         gateway.addBPMNId(gw.getAttribute("id"));
@@ -238,7 +239,7 @@ public class BPMNReader {
           }
         }
       }
-      if (inLane || flowNodes.getLength() < 0) {
+      if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         newId = model.getNewId();
         Gateway gateway = new Gateway(newId, "", lane, pool, GatewayType.XOR);
         gateway.addBPMNId(gw.getAttribute("id"));
