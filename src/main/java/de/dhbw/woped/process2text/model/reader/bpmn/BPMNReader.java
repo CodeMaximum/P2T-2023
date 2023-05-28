@@ -80,7 +80,7 @@ public class BPMNReader {
           }
         }
       }
-      logger.info(String.valueOf(flowNodes == null));
+
       if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         // erstellen der Activity, hinzufügen in model und transformedElemsRev
         Activity activity =
@@ -267,6 +267,7 @@ public class BPMNReader {
 
   private void extractPool(Document doc, ProcessModel model) {
     NodeList pools = doc.getElementsByTagName("bpmn:process");
+
     for (int i = 0; i < pools.getLength(); i++) {
       Element poolElement = (Element) pools.item(i);
       NodeList lanes = poolElement.getElementsByTagName("bpmn:laneSet");
