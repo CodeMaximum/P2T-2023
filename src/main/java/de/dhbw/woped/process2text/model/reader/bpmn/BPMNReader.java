@@ -2,8 +2,7 @@ package de.dhbw.woped.process2text.model.reader.bpmn;
 
 import de.dhbw.woped.process2text.model.process.*;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.slf4j.Logger;
@@ -285,9 +284,21 @@ public class BPMNReader {
   }
 
   private void extractArc(Document doc, ProcessModel model) {
-    NodeList list = doc.getElementsByTagName("bpmn:sequenceFlow");
-    for (int i = 0; i < list.getLength(); i++) {
-      Node fstNode = list.item(i);
+    NodeList sequenceList = doc.getElementsByTagName("bpmn:sequenceFlow");
+    NodeList messageList = doc.getElementsByTagName("bpmn:messageFlow");
+
+    ArrayList<Node> mergedList = new ArrayList<>();
+
+    for (int i = 0; i < sequenceList.getLength(); i++){
+      mergedList.add(sequenceList.item((i)));
+    }
+    for (int i = 0; i < messageList.getLength(); i++){
+      mergedList.add(messageList.item((i)));
+    }
+
+    Iterator<Node> iterator1 = mergedList.iterator();
+    while (iterator1.hasNext()) {
+      Node fstNode = iterator1.next();
       Element arc = (Element) fstNode;
       String sourceRef = arc.getAttribute("sourceRef");
       String targetRef = arc.getAttribute("targetRef");
