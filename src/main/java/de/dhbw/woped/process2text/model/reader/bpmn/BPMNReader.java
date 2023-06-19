@@ -92,14 +92,17 @@ public class BPMNReader {
     }
   }
 
-  private void extractEvents(
-      ProcessModel model, Element poolElement, Pool pool, Element laneElement, Lane lane) {
+  private void extractEvents( ProcessModel model, Element poolElement, Pool pool, Element laneElement, Lane lane) {
+
     // Anlegen von Listen für die verschiedenen Eventarten
     NodeList intermediateEvent = poolElement.getElementsByTagName("bpmn:intermediateCatchEvent");
-    NodeList startEvent = poolElement.getElementsByTagName("bpmn:startEvent");
-    NodeList endEvent = poolElement.getElementsByTagName("bpmn:endEvent");
+    NodeList startEvent        = poolElement.getElementsByTagName("bpmn:startEvent");
+    NodeList endEvent          = poolElement.getElementsByTagName("bpmn:endEvent");
+
     int newId;
     NodeList flowNodes = null;
+
+
     // Überprüfen ob lane vorhanden ist
     if (lane != null) {
       // extrahieren der Elemente innerhalb der Lane
@@ -158,7 +161,7 @@ public class BPMNReader {
       }
     }
 
-    // Endevent wird als Activity abgespeichert (analog zur PNML-Klasse)
+    // Endevent wird als Acitivity abgespeichert
     for (int j = 0; j < endEvent.getLength(); j++) {
       Node scdNode = endEvent.item(j);
       Element event = (Element) scdNode;
@@ -173,6 +176,7 @@ public class BPMNReader {
           }
         }
       }
+
       if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
         newId = model.getNewId();
         Activity activity = new Activity(newId, "complete process", lane, pool, 0);
@@ -268,10 +272,28 @@ public class BPMNReader {
   private void extractPool(Document doc, ProcessModel model) {
     NodeList pools = doc.getElementsByTagName("bpmn:process");
 
+    NodeList participants = doc.getElementsByTagName("bpmn:participant");
+
     for (int i = 0; i < pools.getLength(); i++) {
       Element poolElement = (Element) pools.item(i);
       NodeList lanes = poolElement.getElementsByTagName("bpmn:laneSet");
       Pool pool = new Pool(poolElement.getAttribute("id"));
+      pool.setBPMNId(pool.getName());
+
+      for (int j = 0; j < participants.getLength(); j++){
+        Element particpinatElement = (Element) participants.item(j);
+        String participantName = particpinatElement.getAttribute("name");
+        String particpantProcessRef = particpinatElement.getAttribute("processRef");
+
+        // Pool Textlabel setzten
+        boolean test = particpantProcessRef.equals(pool.getBPMNId());
+        if (particpantProcessRef.trim().equals(pool.getBPMNId().trim())){
+          pool.setName(participantName);
+        }
+      }
+
+
+
       model.addPool(poolElement.getAttribute("id"));
       this.transformedElemsRev.put(model.getNewId(), poolElement.getAttribute("id"));
       if (lanes.getLength() == 0) {

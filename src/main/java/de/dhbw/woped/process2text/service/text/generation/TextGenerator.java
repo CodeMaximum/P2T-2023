@@ -45,8 +45,8 @@ public class TextGenerator {
   }
 
   public String toText(String input) throws Exception {
-    String imperativeRole = "";
-    ByteArrayInputStream is = new ByteArrayInputStream(input.getBytes());
+    String imperativeRole       = "";
+    ByteArrayInputStream is     = new ByteArrayInputStream(input.getBytes());
     ByteArrayInputStream helpis = new ByteArrayInputStream(input.getBytes());
     DocumentBuilderFactory helpdbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder helpdb = helpdbf.newDocumentBuilder();
@@ -57,7 +57,6 @@ public class TextGenerator {
     HashMap<Integer, String> transformedElemsRev = null;
     NodeList isBPMN = helpdoc.getElementsByTagName("bpmn:process");
 
-    int test = isBPMN.getLength();
     if (isPnml.getLength() > 0) {
       PNMLReader pnmlReader = new PNMLReader();
       PetriNet petriNet = pnmlReader.getPetriNetFromPNMLString(is);
@@ -91,6 +90,13 @@ public class TextGenerator {
       FormatConverter formatConverter = new FormatConverter();
       Process p = formatConverter.transformToRPSTFormat(model);
       RPST<ControlFlow, Node> rpst = new RPST<>(p);
+
+      // Check for errors in rpst convertion
+      if (rpst.getRoot() == null) {
+        logger.error("rpst conversion failed ");
+        return "Fehler beim Umwandeln der BPMN Datei in einen Text. Sind Sie sich sicher, dass ihr Prozessmodell fehlerfrei ist?";
+      }
+
 
       // Check for Rigids
       boolean containsRigids = PlanningHelper.containsRigid(rpst.getRoot(), rpst);

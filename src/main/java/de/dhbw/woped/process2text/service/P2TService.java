@@ -3,7 +3,11 @@ package de.dhbw.woped.process2text.service;
 import de.dhbw.woped.process2text.service.text.generation.TextGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class P2TService {
@@ -16,7 +20,7 @@ public class P2TService {
    * @param text
    * @return
    */
-  public String generateText(String text) {
+  public ResponseEntity<String> generateText(String text) {
     String preparedText = prepareText(text);
     String output = "";
     TextGenerator tg = new TextGenerator();
@@ -26,8 +30,10 @@ public class P2TService {
 
     } catch (Exception e) {
       logger.error(e.getLocalizedMessage());
+
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fehler in der Matrix");
     }
-    return output;
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(output);
   }
 
   /**
