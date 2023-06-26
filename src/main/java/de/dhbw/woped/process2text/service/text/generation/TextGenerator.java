@@ -34,21 +34,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class TextGenerator {
-  ////////////////////////////////////
-
   Logger logger = LoggerFactory.getLogger(TextGenerator.class);
-
-  public String testGenerator;
   public List<String> roleList;
-  private String contextPath = "";
 
-  public TextGenerator() {
-    this.contextPath = contextPath;
-  }
 
+  /**
+   * Converts the input string into natural language text representation.
+   * @param input The input string to be converted.
+   * @return The natural language text representation of the input.
+   * @throws Exception If the conversion process encounters an error.
+   */
   public String toText(String input) throws Exception {
-    String imperativeRole       = "";
-    ByteArrayInputStream is     = new ByteArrayInputStream(input.getBytes());
+    String imperativeRole = "";
+    ByteArrayInputStream is = new ByteArrayInputStream(input.getBytes());
     ByteArrayInputStream helpis = new ByteArrayInputStream(input.getBytes());
     DocumentBuilderFactory helpdbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder helpdb = helpdbf.newDocumentBuilder();
@@ -121,7 +119,6 @@ public class TextGenerator {
       TextPlanner converter =
           new TextPlanner(rpst, model, lDeriver, lHelper, imperativeRole, false, false);
       converter.convertToText(rpst.getRoot(), 0);
-      ///////////////////////////////////////////////////////////
       ArrayList<DSynTSentence> sentencePlan = converter.getSentencePlan();
 
       // Aggregation
@@ -147,7 +144,8 @@ public class TextGenerator {
 
       return surfaceText;
     } else {
-      return "Bitte Datei im BPMN- oder PNML-Format verwenden.";
+      logger.error("Error: Text generation failed");
+      throw new Exception("Please put in an pnml or bpnm file in xml format");
     }
   }
 }
