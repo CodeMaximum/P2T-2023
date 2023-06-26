@@ -1,5 +1,7 @@
 package de.dhbw.woped.process2text.service.text.generation;
 
+import de.dhbw.woped.process2text.exception.RPSTConvertionException;
+import de.dhbw.woped.process2text.exception.StructureProcessModelException;
 import de.dhbw.woped.process2text.model.dsynt.DSynTSentence;
 import de.dhbw.woped.process2text.model.process.ProcessModel;
 import de.dhbw.woped.process2text.model.reader.bpmn.BPMNReader;
@@ -94,21 +96,26 @@ public class TextGenerator {
       // Check for errors in rpst convertion
       if (rpst.getRoot() == null) {
         logger.error("rpst conversion failed ");
-        return "Fehler beim Umwandeln der BPMN Datei in einen Text. Sind Sie sich sicher, dass ihr Prozessmodell fehlerfrei ist?";
+        throw new RPSTConvertionException("Error: RPST Convertion failed. Process Modell cloud include mistakes");
       }
 
 
       // Check for Rigids
-      boolean containsRigids = PlanningHelper.containsRigid(rpst.getRoot(), rpst);
-      // Structure Rigid and convert back
-      if (containsRigids) {
-        p = formatConverter.transformToRigidFormat(model);
-        RigidStructurer rigidStructurer = new RigidStructurer();
-        p = rigidStructurer.structureProcess(p);
-        model = formatConverter.transformFromRigidFormat(p);
-        p = formatConverter.transformToRPSTFormat(model);
-        rpst = new RPST<>(p);
+      try {
+        boolean containsRigids = PlanningHelper.containsRigid(rpst.getRoot(), rpst);
+        // Structure Rigid and convert back
+        if (containsRigids) {
+          p = formatConverter.transformToRigidFormat(model);
+          RigidStructurer rigidStructurer = new RigidStructurer();
+          p = rigidStructurer.structureProcess(p);
+          model = formatConverter.transformFromRigidFormat(p);
+          p = formatConverter.transformToRPSTFormat(model);
+          rpst = new RPST<>(p);
+        }
+      } catch (Exception e) {
+        throw new StructureProcessModelException("Error: Structure Process Modell failed");
       }
+
 
       // Convert to Text
       TextPlanner converter =

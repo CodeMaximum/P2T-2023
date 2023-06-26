@@ -1,5 +1,8 @@
 package de.dhbw.woped.process2text.service;
 
+import de.dhbw.woped.process2text.exception.BpmNlpHttpStatus;
+import de.dhbw.woped.process2text.exception.RPSTConvertionException;
+import de.dhbw.woped.process2text.exception.StructureProcessModelException;
 import de.dhbw.woped.process2text.service.text.generation.TextGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +31,19 @@ public class P2TService {
     try {
       output = tg.toText(preparedText);
 
-    } catch (Exception e) {
+    }
+    catch (RPSTConvertionException rpstConvertionException){
+      logger.error(rpstConvertionException.getLocalizedMessage());
+      return ResponseEntity.status(BpmNlpHttpStatus.RPST_FAILURE).body(rpstConvertionException.getLocalizedMessage());
+    }
+    catch (StructureProcessModelException structureProcessModelException){
+      logger.error(structureProcessModelException.getLocalizedMessage());
+      return ResponseEntity.status(BpmNlpHttpStatus.STRUCTURE_FAILURE).body(structureProcessModelException.getLocalizedMessage());
+    }
+    catch (Exception e) {
       logger.error(e.getLocalizedMessage());
 
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fehler in der Matrix");
+      return ResponseEntity.status(BpmNlpHttpStatus.CONVERTTION_ERROR).body("Error while generating the text out of the process");
     }
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(output);
   }
