@@ -91,13 +91,6 @@ public class TextGenerator {
       Process p = formatConverter.transformToRPSTFormat(model);
       RPST<ControlFlow, Node> rpst = new RPST<>(p);
 
-      // Check for errors in rpst convertion
-      if (rpst.getRoot() == null) {
-        logger.error("rpst conversion failed ");
-        throw new RPSTConvertionException("Error: RPST Convertion failed. Process Modell cloud include mistakes");
-      }
-
-
       // Check for Rigids
       try {
         boolean containsRigids = PlanningHelper.containsRigid(rpst.getRoot(), rpst);
@@ -111,9 +104,14 @@ public class TextGenerator {
           rpst = new RPST<>(p);
         }
       } catch (Exception e) {
-        throw new StructureProcessModelException("Error: Structure Process Modell failed");
+        throw new StructureProcessModelException("Error: Structure Process Model failed");
       }
 
+      // Check for errors in rpst convertion
+      if (rpst.getRoot() == null) {
+        logger.error("rpst conversion failed ");
+        throw new RPSTConvertionException("Error: RPST Convertion failed. Process Modell cloud include mistakes");
+      }
 
       // Convert to Text
       TextPlanner converter =

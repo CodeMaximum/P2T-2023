@@ -45,6 +45,7 @@ public class P2TService {
 
       return ResponseEntity.status(BpmNlpHttpStatus.CONVERTTION_ERROR).body("Error while generating the text out of the process");
     }
+
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(output);
   }
 
