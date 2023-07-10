@@ -135,7 +135,6 @@ public class BPMNReader {
         }
       }
       if (inLane || flowNodes == null || flowNodes.getLength() < 0) {
-
         newId = model.getNewId();
         Event interelement = new Event(newId, "", lane, pool, EventType.INTM_MSG_THR);
         interelement.addBPMNId(event.getAttribute("id"));
@@ -282,11 +281,11 @@ public class BPMNReader {
       pool.setBPMNId(pool.getName());
 
       for (int j = 0; j < participants.getLength(); j++){
-        Element particpinatElement = (Element) participants.item(j);
-        String participantName = particpinatElement.getAttribute("name");
-        String particpantProcessRef = particpinatElement.getAttribute("processRef");
+        Element participantElement = (Element) participants.item(j);
+        String participantName = participantElement.getAttribute("name");
+        String participantProcessRef = participantElement.getAttribute("processRef");
 
-        if (particpantProcessRef.trim().equals(pool.getBPMNId().trim())){
+        if (participantProcessRef.trim().equals(pool.getBPMNId().trim())){
           pool.setName(participantName);
         }
       }

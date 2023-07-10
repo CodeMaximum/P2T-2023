@@ -2,7 +2,7 @@ package de.dhbw.woped.process2text.exception;
 
 public interface BpmNlpHttpStatus {
     /** Error Status Code: standard exception occurs while generating the text model */
-    public static final int CONVERTTION_ERROR      = 450;
+    public static final int CONVERTION_ERROR = 450;
 
     /** Error Status Code: RPST Convertion failed */
     public static final int RPST_FAILURE           = 451;

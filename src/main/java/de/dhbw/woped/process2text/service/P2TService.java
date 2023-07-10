@@ -6,11 +6,9 @@ import de.dhbw.woped.process2text.exception.StructureProcessModelException;
 import de.dhbw.woped.process2text.service.text.generation.TextGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class P2TService {
@@ -30,7 +28,6 @@ public class P2TService {
 
     try {
       output = tg.toText(preparedText);
-
     }
     catch (RPSTConvertionException rpstConvertionException){
       logger.error(rpstConvertionException.getLocalizedMessage());
@@ -42,10 +39,8 @@ public class P2TService {
     }
     catch (Exception e) {
       logger.error(e.getLocalizedMessage());
-
-      return ResponseEntity.status(BpmNlpHttpStatus.CONVERTTION_ERROR).body("Error while generating the text out of the process");
+      return ResponseEntity.status(BpmNlpHttpStatus.CONVERTION_ERROR).body("Error while generating the text out of the process");
     }
-
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(output);
   }
 
